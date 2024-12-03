@@ -26,20 +26,117 @@ El proyecto trabajará con los siguientes conjuntos de datos:
     
 ### Estructura del Proyecto
 
+```
 Proyecto-Analisis-DeliZone/
 │
-├── data/                   # Carpeta para los conjuntos de datos
-│   ├── publicaciones.csv   # Datos sobre las publicaciones
-│   ├── publico.csv      # Datos de los seguidores
+├── api/
+│   └── api.py         # Api de FastAPI app
 │
-├── notebooks/           # Jupyter Notebooks para el análisis
-│   ├── analisis_publicaciones.ipynb
-│   ├── analisis_publico.ipynb
+├── data/
+│   └── publicaciones.csv
+│   └── publico.csv
 │
-├── scripts/             # Scripts de Python organizados
-│   ├── limpieza_datos.py
-│   ├── visualizaciones.py
-│   ├── analisis.py
+├── etl/
+│   └── etl_proceso.ipynb
+│   └── etl_proceso.py
+│
+├── graficos/
+│
+├── ml/
+│   └── arboles.py
+│   └── bayes.py
+│
+├── viz/
+│   └── visualizaciones.py
+│
+├── main.py 
 │
 ├── README.md            # Documentación del proyecto
 ├── requirements.txt     # Dependencias necesarias
+```
+
+## Proceso ETL de las Publicaciones
+
+### Descripción General
+
+Este proceso ETL (Extract, Transform, Load) tiene como objetivo extraer los datos de un archivo CSV en este caso haremos el proceso para las publicaciones de la cuenta de Instagram de *DeliZone*
+
+1. El proceso comienza obteniendo la ubicación del archivo CSV publicaciones.csv, que se encuentra en la carpeta data. Se utiliza la función os.path para construir la ruta de manera flexible, asegurando que funcione correctamente en diferentes entornos.
+
+```
+# Extracción de los datos
+
+# Importamos las librerias necesarias
+import pandas as pd
+import os
+
+# Cargamos los datos
+base_path = os.path.dirname(os.path.abspath(__file__))
+data_path = os.path.join(base_path, '..', 'data', 'publicaciones.csv')
+df_origin = pd.read_csv(data_path)
+df = df_origin.copy()
+```
+
+2. Visualización de los Datos:
+Se visualiza el DataFrame df para tener una vista preliminar de los datos.
+Se utiliza df.info() para obtener información detallada sobre los tipos de datos de cada columna, lo que ayuda a identificar posibles inconsistencias o datos no esperados.
+
+```
+# Mostramos los datos de las publicaciones
+df
+
+# Tipos de dato por columna
+df.info()
+```
+
+3. Eliminación de Columnas Innecesarias:
+Se define una lista COLUMNS_TO_DROP con los nombres de las columnas que no se necesitan para el análisis posterior.
+La función df.drop() elimina estas columnas del DataFrame, dejando solo las columnas que serán relevantes para el análisis.
+
+```
+# Eliminación de columnas que no necesitamos
+COLUMNS_TO_DROP = [
+'Identificador de la cuenta',
+'Nombre de usuario de la cuenta',
+'Nombre de la cuenta', 'Duración (segundos)',
+'Comentario sobre los datos',
+'Comentarios',
+'Enlace permanente',
+'Fecha',
+]
+df = df.drop(COLUMNS_TO_DROP, axis=1)
+
+# Mostramos el resultado
+df
+```
+
+4. Extraccion de Hashtags
+- Se muestra una de las descripciones de las publicaciones para observar cómo están formateados los hashtags.
+- Utilizando el método str.findall(r'#\w+'), se extraen todos los hashtags presentes en la columna Descripción. Esta expresión regular busca las palabras que comienzan con el símbolo # y contienen caracteres alfanuméricos.
+- Los hashtags encontrados se almacenan en una nueva columna llamada Hashtags, lo que permite tener una lista de hashtags por cada publicación.
+
+```
+# Separación de Hashtags de la descripción
+# Mostramos una de las descripciones para obtener la información completa
+df.iloc[0]['Descripción']
+```
+
+```
+# Ahora obtenemos únicamente los numerales de todas las descripciones
+df['Descripción'].str.findall('#')
+```
+
+```
+# Ahora obtenemos los Hashtags completos
+df['Descripción'].str.findall(r'#\w+') # findall nos sirve para buscar partes de un string en específico
+```
+
+```
+# Ahora creamos separamos los hashtags de la descripción
+df['Hashtags'] = df['Descripción'].str.findall(r'#\w+')
+```
+
+```
+# Mostramos los datos
+df
+```
