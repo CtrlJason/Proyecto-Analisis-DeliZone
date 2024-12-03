@@ -22,8 +22,8 @@ async def run_etl():
 @app.get("/run_dataviz")
 async def dataviz():
     grafico = generar_grafico()
-    with open("graficos/grafico.png", "wb") as f:
-        f.write(grafico)
+    # with open("graficos/grafico.png", "wb") as f:
+    #     f.write(grafico)
     return JSONResponse(content={"message": "Gráfico generado"})
 
 @app.get("/ml/arboles")
