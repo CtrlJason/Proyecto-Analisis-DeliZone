@@ -179,7 +179,7 @@ plt.show()
 plt.savefig("../graficos/promedio_alcance_tipo_publicacion.png")
 plt.close()
 ```
-![Promedio de Alcance](graficos/promedio_alcance_tipo_publicacion.png)
+![Promedio de Alcance](graficos/promedio_alcance_tipo_publicacion.jpg)
 
 ## Relación entre Impresiones y Me gusta
 Este gráfico muestra cómo se relacionan las impresiones con los "me gusta". Ayuda a identificar si más impresiones resultan en más "me gusta".
@@ -202,7 +202,7 @@ plt.show()
 plt.savefig("../graficos/relacion_impresiones_megusta.png")
 plt.close()
 ```
-![Relación entre Impresiones y Me gusta](graficos/relacion_impresiones_megusta.png)
+![Relación entre Impresiones y Me gusta](graficos/relacion_impresiones_megusta.jpg)
 
 ## Total de interacciones de las publicaciones
 Este gráfico muestra las interacciones de todas las publicaciones, incluyendo "me gusta", "guardado" y "compartido". Muestra una visión general de las métricas mas importantes de interacción.
@@ -227,7 +227,7 @@ plt.show()
 plt.savefig("../graficos/interacciones_totales.png")
 plt.close()
 ```
-![Interacciones Totales](graficos/interacciones_totales.png)
+![Interacciones Totales](graficos/interacciones_totales.jpg)
 
 ## Próximos pasos
 - Integrar modelos de machine learning para predecir el alcance de futuras publicaciones.
