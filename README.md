@@ -40,7 +40,7 @@ Proyecto-Analisis-DeliZone/
 │   └── etl_proceso.ipynb
 │   └── etl_proceso.py
 │
-├── graficos/
+├── graficos/           # Resultados visuales de los análisis
 │
 ├── ml/
 │   └── arboles.py
@@ -140,3 +140,139 @@ df['Hashtags'] = df['Descripción'].str.findall(r'#\w+')
 # Mostramos los datos
 df
 ```
+## Gráficos Generados
+Se presentan las visualizaciones creadas para analizar las métricas de las publicaciones:
+
+### Explicación corta del codigo que se utiliza para crear los graficos
+
+- plt.figure(figsize=(8, 5)): Crea una nueva figura con un tamaño específico.
+- tipo_publicacion_alcance.sort_values().plot(kind='bar', ...): Ordena los valores y genera un gráfico de barras.
+- plt.title(), plt.xlabel(), plt.ylabel(): Añade un título y etiquetas a los ejes.
+- plt.xticks(rotation=45): Rota las etiquetas del eje X para mejor visibilidad.
+- plt.tight_layout(): Ajusta el diseño para evitar solapamientos.
+- plt.show(): Muestra el gráfico en pantalla.
+- plt.savefig(...): Guarda la figura en un archivo PNG.
+- plt.close(): Cierra el gráfico para liberar recursos.
+
+### Alcance por Tipo de Publicación
+Este gráfico de barras muestra el promedio de alcance para cada tipo de publicación (por ejemplo, imágenes, secuencias, etc.). Nos ayuda a identificar qué formato funciona mejor en términos de alcance.
+
+Datos:
+- Tipo de publicación
+- Alcance
+
+```
+# Guardamos ambas columnas
+tipo_publicacion_alcance = data.groupby("Tipo de publicación")["Alcance"].mean()
+
+# Creamos el grafico
+plt.figure(figsize=(8, 5))
+tipo_publicacion_alcance.sort_values().plot(kind='bar', color='skyblue', edgecolor='black')
+plt.title("Promedio de Alcance por Tipo de Publicación")
+plt.xlabel("Tipo de Publicación")
+plt.ylabel("Promedio de Alcance")
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
+# Guardamos la grafica en una imagen
+plt.savefig("../graficos/promedio_alcance_tipo_publicacion.png")
+plt.close()
+```
+![Promedio de Alcance](graficos/promedio_alcance_tipo_publicacion.png)
+
+## Relación entre Impresiones y Me gusta
+Este gráfico muestra cómo se relacionan las impresiones con los "me gusta". Ayuda a identificar si más impresiones resultan en más "me gusta".
+Datos utilizados:
+- Impresiones
+- Me gusta
+
+```
+# Crear el gráfico de dispersión
+plt.figure(figsize=(8, 5))
+plt.scatter(data["Impresiones"], data["Me gusta"], color='orange', alpha=0.7)
+plt.title("Relación entre Impresiones y Me gusta")
+plt.xlabel("Impresiones")
+plt.ylabel("Me gusta")
+plt.grid(alpha=0.3)
+plt.tight_layout()
+plt.show()
+
+# Guardamos la grafica en una imagen
+plt.savefig("../graficos/relacion_impresiones_megusta.png")
+plt.close()
+```
+![Relación entre Impresiones y Me gusta](graficos/relacion_impresiones_megusta.png)
+
+## Total de interacciones de las publicaciones
+Este gráfico muestra las interacciones de todas las publicaciones, incluyendo "me gusta", "guardado" y "compartido". Muestra una visión general de las métricas mas importantes de interacción.
+Datos:
+- Me gusta
+- Veces que se guardó
+- Veces que se compartió
+
+```
+interacciones = data[["Me gusta", "Veces que se guardó", "Veces que se compartió"]].sum()
+
+# Crearmos el grafico
+plt.figure(figsize=(10, 6))
+interacciones.plot(kind="bar", color=["#6A5ACD", "#6495ED", "#FFA07A"], edgecolor="black")
+plt.title("Interacciones Totales")
+plt.ylabel("Cantidad Total")
+plt.xticks(rotation=0)
+plt.tight_layout()
+plt.show()
+
+# Guardamos la grafica en una imagen
+plt.savefig("../graficos/interacciones_totales.png")
+plt.close()
+```
+![Interacciones Totales](graficos/interacciones_totales.png)
+
+## Próximos pasos
+- Integrar modelos de machine learning para predecir el alcance de futuras publicaciones.
+- Automatizar el proceso ETL para facilitar el manejo de datos.
+
+## Guía de Uso de la API de DeliZone
+La API de DeliZone está diseñada para permitir la interacción con el proyecto de análisis de datos y generación de modelos. A continuación, se detallan los pasos necesarios para usar la API.
+
+1. Iniciar la API
+
+Para ejecutar la API, sigue estos pasos:
+- Asegúrate de tener las dependencias necesarias:
+- Si no has instalado las dependencias, puedes hacerlo usando el archivo requirements.txt de tu proyecto. Ejecuta el siguiente comando:
+```
+pip install -r requirements.txt
+```
+
+2. Ejecutar el archivo main.py:
+El archivo main.py es el punto de entrada para la API. En la raíz del proyecto, ejecuta el siguiente comando para iniciar el servidor de la API:
+```
+python main.py
+```
+
+3. Acceder a la documentación automática:
+FastAPI genera una documentación para realizar la prueba de la API. Accede a la siguiente URL en tu navegador:
+```
+http://localhost:8000/docs
+```
+
+## Ejemplo de Uso con URL
+Usar URL:
+
+Si prefieres probar los endpoints desde la línea de comandos con URL, aquí tienes ejemplos de cómo hacerlo.
+1. jecutar el proceso ETL:
+
+curl http://localhost:8000/run_etl
+
+2. Generar gráfico:
+
+curl http://localhost:8000/run_dataviz/1 <-- Puedes poner 1 de los 3 graficos que se mostraron con anterioridad.
+
+3. Ejecutar modelo de árboles de decisión: (Aun sin terminar) 
+
+curl http://localhost:8000/ml/arboles
+
+4. Ejecutar modelo de Naive Bayes: (Aun sin terminar) 
+
+curl http://localhost:8000/ml/bayes

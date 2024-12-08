@@ -4,7 +4,7 @@ from fastapi.responses import JSONResponse
 
 # Importaciones del proyecto
 from etl.etl_proceso import etl_proceso
-from viz.visualizaciones import generar_grafico
+from viz.visualizaciones import generar_grafico_alcance, generar_grafico_impresiones, generar_grafico_interacciones
 from ml.arboles import modelo_arbol
 from ml.bayes import modelo_bayes
 
@@ -19,11 +19,19 @@ async def run_etl():
     resultado_etl = etl_proceso()
     return JSONResponse(content={"message": "ETL completado", "result": resultado_etl})
 
-@app.get("/run_dataviz")
+@app.get("/run_dataviz/1")
 async def dataviz():
-    grafico = generar_grafico()
-    # with open("graficos/grafico.png", "wb") as f:
-    #     f.write(grafico)
+    grafico = generar_grafico_interacciones()
+    return JSONResponse(content={"message": "Gráfico generado"})
+
+@app.get("/run_dataviz/2")
+async def dataviz():
+    grafico = generar_grafico_impresiones()
+    return JSONResponse(content={"message": "Gráfico generado"})
+
+@app.get("/run_dataviz/3")
+async def dataviz():
+    grafico = generar_grafico_interacciones()
     return JSONResponse(content={"message": "Gráfico generado"})
 
 @app.get("/ml/arboles")
